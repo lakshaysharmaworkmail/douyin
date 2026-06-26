@@ -1,11 +1,14 @@
 const express = require("express");
 const axios = require("axios");
 const path = require("path");
-const app = express();
+const fs = require("fs");  
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "public")));
+const publicDir = fs.existsSync(path.join(__dirname, "public"))
+  ? path.join(__dirname, "public")
+  : __dirname;
+app.use(express.static(publicDir));
 
 // ============================================================
 // Helpers (ported from Apps Script)
@@ -322,7 +325,7 @@ app.get("/api/scrape", async (req, res) => {
 
 // Serve frontend
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+  res.sendFile(path.join(publicDir, "index.html"));
 });
 
 const PORT = process.env.PORT || 3000;
